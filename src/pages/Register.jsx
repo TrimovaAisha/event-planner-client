@@ -6,7 +6,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/auth/register";
+  const BASE_URL = "https://event-planner-backend-eavd.onrender.com";
 
   const handleRegister = async () => {
     try {
@@ -16,7 +16,7 @@ function Register() {
         body: JSON.stringify({ email, password })
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
-      navigate("/");
+      navigate("/"); 
     } catch (err) {
       console.error("Ошибка при регистрации:", err);
       alert("Не удалось зарегистрироваться");

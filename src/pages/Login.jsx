@@ -6,7 +6,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/auth/login";
+  const BASE_URL = "https://event-planner-backend-eavd.onrender.com";
 
   const handleLogin = async () => {
     try {
