@@ -13,7 +13,7 @@ function Dashboard() {
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  console.log("TOKEN:", token);
   const fetchEvents = async () => {
     if (!token) return console.warn("Нет токена, войдите в аккаунт");
     try {
