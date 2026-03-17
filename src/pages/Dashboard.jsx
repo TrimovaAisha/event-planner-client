@@ -13,7 +13,6 @@ function Dashboard() {
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  localStorage.setItem("token", "<новый JWT>");
   const fetchEvents = async () => {
     if (!token) return console.warn("Нет токена, войдите в аккаунт");
     try {
