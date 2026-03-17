@@ -6,12 +6,15 @@ function Dashboard() {
   const [description, setDescription] = useState("");
   const token = localStorage.getItem("token");
 
+  // ✅ Обратите внимание на /api/events
   const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/events";
 
   useEffect(() => {
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Получение всех событий
   const fetchEvents = async () => {
     if (!token) return;
     try {
@@ -29,8 +32,10 @@ function Dashboard() {
     }
   };
 
+  // Создание нового события
   const createEvent = async () => {
     if (!token) return alert("Сначала войдите в аккаунт");
+    if (!title.trim() || !description.trim()) return alert("Введите название и описание");
     try {
       const res = await fetch(BASE_URL, {
         method: "POST",
@@ -50,6 +55,7 @@ function Dashboard() {
     }
   };
 
+  // Удаление события
   const deleteEvent = async (id) => {
     if (!token) return alert("Сначала войдите в аккаунт");
     try {
