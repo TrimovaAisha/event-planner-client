@@ -4,38 +4,48 @@ function Dashboard() {
   const [events, setEvents] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const token = localStorage.getItem("token");
+  const [error, setError] = useState(""); // Для отображения ошибок пользователю
 
-  // ✅ Правильный URL для API
+  // Берем токен и убираем лишние пробелы
+  const token = localStorage.getItem("token")?.trim();
+
   const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/events";
 
   useEffect(() => {
+    if (!token) {
+      setError("❌ Пожалуйста, войдите в аккаунт для доступа к событиям");
+      return;
+    }
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const fetchEvents = async () => {
-    if (!token) return console.warn("Нет токена, войдите в аккаунт");
     try {
-      console.log("Запрос GET к", BASE_URL);
       const res = await fetch(BASE_URL, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+      if (res.status === 401) {
+        setError("❌ Токен недействителен или просрочен. Войдите заново.");
+        return;
+      }
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       const data = await res.json();
       setEvents(data);
     } catch (err) {
       console.error("Ошибка при получении событий:", err);
+      setError("Произошла ошибка при получении событий");
     }
   };
 
   const createEvent = async () => {
     if (!token) return alert("Сначала войдите в аккаунт");
     if (!title.trim() || !description.trim()) return alert("Введите название и описание");
+
     try {
-      console.log("Запрос POST к", BASE_URL, { title, description });
       const res = await fetch(BASE_URL, {
         method: "POST",
         headers: {
@@ -44,6 +54,10 @@ function Dashboard() {
         },
         body: JSON.stringify({ title, description }),
       });
+      if (res.status === 401) {
+        setError("❌ Токен недействителен или просрочен. Войдите заново.");
+        return;
+      }
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       const data = await res.json();
       setEvents([...events, data]);
@@ -51,25 +65,35 @@ function Dashboard() {
       setDescription("");
     } catch (err) {
       console.error("Ошибка при создании события:", err);
+      setError("Произошла ошибка при создании события");
     }
   };
 
   const deleteEvent = async (id) => {
     if (!token) return alert("Сначала войдите в аккаунт");
     try {
-      console.log("Запрос DELETE к", `${BASE_URL}/${id}`);
       const res = await fetch(`${BASE_URL}/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
         },
       });
+      if (res.status === 401) {
+        setError("❌ Токен недействителен или просрочен. Войдите заново.");
+        return;
+      }
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       setEvents(events.filter((event) => event._id !== id));
     } catch (err) {
       console.error("Ошибка при удалении события:", err);
+      setError("Произошла ошибка при удалении события");
     }
   };
+
+  // Если токен отсутствует или есть ошибка авторизации, показываем сообщение
+  if (!token || error) {
+    return <div className="dashboard"><p>{error}</p></div>;
+  }
 
   return (
     <div className="dashboard">
