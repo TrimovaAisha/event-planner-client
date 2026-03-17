@@ -6,7 +6,6 @@ function Dashboard() {
   const [description, setDescription] = useState("");
   const token = localStorage.getItem("token");
 
-  // Точный URL к роуту на бэке
   const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/events";
 
   useEffect(() => {
@@ -31,12 +30,9 @@ function Dashboard() {
 
   const createEvent = async () => {
     try {
-      const res = await fetch(BASE_URL, {
+      const res = await fetch(BASE_URL,{
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ title, description })
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
