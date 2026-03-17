@@ -6,7 +6,7 @@ function Dashboard() {
   const [description, setDescription] = useState("");
   const token = localStorage.getItem("token");
 
-  // ✅ Обратите внимание на /api/events
+  // ✅ Правильный URL для API
   const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/events";
 
   useEffect(() => {
@@ -14,10 +14,10 @@ function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Получение всех событий
   const fetchEvents = async () => {
-    if (!token) return;
+    if (!token) return console.warn("Нет токена, войдите в аккаунт");
     try {
+      console.log("Запрос GET к", BASE_URL);
       const res = await fetch(BASE_URL, {
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -32,11 +32,11 @@ function Dashboard() {
     }
   };
 
-  // Создание нового события
   const createEvent = async () => {
     if (!token) return alert("Сначала войдите в аккаунт");
     if (!title.trim() || !description.trim()) return alert("Введите название и описание");
     try {
+      console.log("Запрос POST к", BASE_URL, { title, description });
       const res = await fetch(BASE_URL, {
         method: "POST",
         headers: {
@@ -55,10 +55,10 @@ function Dashboard() {
     }
   };
 
-  // Удаление события
   const deleteEvent = async (id) => {
     if (!token) return alert("Сначала войдите в аккаунт");
     try {
+      console.log("Запрос DELETE к", `${BASE_URL}/${id}`);
       const res = await fetch(`${BASE_URL}/${id}`, {
         method: "DELETE",
         headers: {
