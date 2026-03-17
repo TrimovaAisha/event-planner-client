@@ -13,12 +13,13 @@ function Dashboard() {
   }, []);
 
   const fetchEvents = async () => {
+    if (!token) return;
     try {
       const res = await fetch(BASE_URL, {
         headers: {
           "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       const data = await res.json();
@@ -29,11 +30,15 @@ function Dashboard() {
   };
 
   const createEvent = async () => {
+    if (!token) return alert("Сначала войдите в аккаунт");
     try {
-      const res = await fetch(BASE_URL,{
+      const res = await fetch(BASE_URL, {
         method: "POST",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description })
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, description }),
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       const data = await res.json();
@@ -46,12 +51,13 @@ function Dashboard() {
   };
 
   const deleteEvent = async (id) => {
+    if (!token) return alert("Сначала войдите в аккаунт");
     try {
       const res = await fetch(`${BASE_URL}/${id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${token}`
-        }
+          "Authorization": `Bearer ${token}`,
+        },
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       setEvents(events.filter((event) => event._id !== id));
@@ -63,7 +69,6 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <h2>Мои мероприятия</h2>
-
       <div className="form">
         <input
           placeholder="Мероприятие"
