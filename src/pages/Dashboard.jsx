@@ -6,7 +6,8 @@ function Dashboard() {
   const [description, setDescription] = useState("");
   const token = localStorage.getItem("token");
 
-  const BASE_URL = "https://event-planner-backend-eavd.onrender.com";
+  // Точный URL к роуту на бэке
+  const BASE_URL = "https://event-planner-backend-eavd.onrender.com/api/events";
 
   useEffect(() => {
     fetchEvents();
@@ -14,8 +15,11 @@ function Dashboard() {
 
   const fetchEvents = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/events`, {
-        headers: { "Authorization": token, "Content-Type": "application/json" }
+      const res = await fetch(BASE_URL, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       const data = await res.json();
@@ -27,9 +31,12 @@ function Dashboard() {
 
   const createEvent = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/events`, {
+      const res = await fetch(BASE_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": token },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ title, description })
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
@@ -44,9 +51,11 @@ function Dashboard() {
 
   const deleteEvent = async (id) => {
     try {
-      const res = await fetch(`${BASE_URL}/events/${id}`, {
+      const res = await fetch(`${BASE_URL}/${id}`, {
         method: "DELETE",
-        headers: { "Authorization": token }
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
       if (!res.ok) throw new Error(`Ошибка ${res.status}`);
       setEvents(events.filter((event) => event._id !== id));
@@ -60,8 +69,16 @@ function Dashboard() {
       <h2>Мои мероприятия</h2>
 
       <div className="form">
-        <input placeholder="Мероприятие" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <input placeholder="Описание мероприятия" value={description} onChange={(e) => setDescription(e.target.value)} />
+        <input
+          placeholder="Мероприятие"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <input
+          placeholder="Описание мероприятия"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
         <button onClick={createEvent}>Добавить мероприятие</button>
       </div>
 
